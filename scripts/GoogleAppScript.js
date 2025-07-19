@@ -35,7 +35,7 @@ function scrollToTodayMobile() {
   // Create a temporary named range to help with navigation
   const lastRow = sheet.getLastRow();
   
-  // No need to start at row 1000 - scan the entire sheet
+  // Scan the entire sheet starting from row 1
   for (let i = 1; i <= lastRow; i++) {
     // Check column A and column C
     for (let col of [1, 3]) {
@@ -77,18 +77,6 @@ function scrollToToday() {
     return;
   }
 
-  // Try to simulate zoom out shortcut (Note: This is experimental and may not work consistently)
-  try {
-    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    // Simulate pressing Ctrl and - a few times to zoom out
-    for (let i = 0; i < 3; i++) {
-      spreadsheet.getRange('A1').activate();
-      spreadsheet.getActiveRangeList().getRange('A1').activate();
-    }
-  } catch (e) {
-    Logger.log("Could not adjust zoom level: " + e.toString());
-  }
-
   const today = new Date();
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayOfWeek = today.getDay();
@@ -106,10 +94,10 @@ function scrollToToday() {
   const lastRow = sheet.getLastRow();
   let targetRow = null;
   
-  // Start searching from row 1000 instead of row 1
-  const startRow = 1000;
+  // Start searching from row 1
+  const startRow = 1;
 
-  // Look directly for the formatted date string in column C, starting from row 1000
+  // Look directly for the formatted date string in column C, starting from row 1
   for (let i = startRow; i <= lastRow; i++) {
     const cellValue = sheet.getRange(i, 3).getValue().toString().trim();
     Logger.log(`Row ${i}: Found "${cellValue}"`);
@@ -149,7 +137,7 @@ function scrollToToday() {
       sheet.getRange(targetRow, 1).activate();
     }
   } else {
-    Logger.log("No target row found after row 1000");
+    Logger.log("No target row found");
   }
 }
 
@@ -233,12 +221,12 @@ function addHyperlinksToJobs() {
   // Get the full range of the AutoFab sheet
   const lastRow = autoFabSheet.getLastRow();
   
-  // START PROCESSING FROM ROW 1000 instead of row 1
-  const startRow = 1000;
+  // Start processing from row 1
+  const startRow = 1;
   
   // Process each column
   for (const col of columnsToProcess) {
-    // Only get the range starting from row 1000
+    // Get the range starting from row 1
     const range = autoFabSheet.getRange(startRow, col, lastRow - startRow + 1);
     const values = range.getValues();
     
@@ -248,7 +236,7 @@ function addHyperlinksToJobs() {
       // Skip empty cells
       if (!cellValue) return;
       
-      // Adjust rowIndex to account for starting at row 1000
+      // Adjust rowIndex to account for starting at row 1
       const actualRow = startRow + rowIndex;
       const jobCell = autoFabSheet.getRange(actualRow, col);
       const richTextValue = jobCell.getRichTextValue();
